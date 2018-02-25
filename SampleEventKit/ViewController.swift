@@ -8,11 +8,19 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+import EventKit
+import EventKitUI
 
+class ViewController: UIViewController {
+  
+  var eventKitManager : EventKitManager!
+  
   override func viewDidLoad() {
     super.viewDidLoad()
-    // Do any additional setup after loading the view, typically from a nib.
+    
+    eventKitManager = EventKitManager()
+    eventKitManager.setup()
+    
   }
 
   override func didReceiveMemoryWarning() {
@@ -20,6 +28,37 @@ class ViewController: UIViewController {
     // Dispose of any resources that can be recreated.
   }
 
+  @IBAction func createEvent(_ sender: Any) {
+    
+    let eventVC = EKEventEditViewController.init()
+    eventVC.event = EKEvent.init(eventStore: eventKitManager.eventStore)
+    eventVC.eventStore = eventKitManager.eventStore
+    eventVC.editViewDelegate = self
+    present(eventVC, animated: true, completion: nil)
+    
+    
+  }
+  
+}
 
+extension ViewController : EKEventViewDelegate {
+  
+  func eventViewController(_ controller: EKEventViewController, didCompleteWith action: EKEventViewAction) {
+    
+    dismiss(animated: true, completion: nil)
+    
+  }
+  
+  
+}
+
+extension ViewController : EKEventEditViewDelegate {
+  
+  func eventEditViewController(_ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction) {
+    
+    controller.dismiss(animated: true, completion: nil)
+    
+  }
+  
 }
 
